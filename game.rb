@@ -55,6 +55,10 @@ module Mastermind
         @game = GameBraker.new
       end
     end
+
+    def self.get_game
+      @game
+    end
   end
 
   class GameMaker
@@ -65,6 +69,7 @@ module Mastermind
         puts "Invalid digit code or length"
         restore()
       end
+      GameLooper.start_loop(@code_to_break, 1)
     end
 
     def restore
@@ -75,8 +80,8 @@ module Mastermind
   class GameBraker
     def initialize
       puts "Computer generates a #{$code_length} digit code!"
-      @code_to_break = random_code($code_length, $max_value)
-      loop_to_solve()
+      @code_to_break = RandomCodeGenerator.random_code($code_length, $max_value)
+      GameLooper.start_loop(@code_to_break, 2)
     end
 
     def random_code(code_length, max_value)
@@ -87,29 +92,6 @@ module Mastermind
         iteration += 1
       end
       code
-    end
-
-    def loop_to_solve
-      count = 0
-      loop do
-        count += 1
-        puts "#{count} attempt(s). Input your #{$code_length} digit code:"
-        $code_input = gets.chomp
-
-        if CodeChecker.check_errors($code_input) != 0
-          puts "Wrong input. Repeat."
-          count -= 1
-          next
-        end
-
-        code_input_array = $code_input.split("")
-        string_of_decoding = Blocks.print_blocks_sequence(*code_input_array) + "   |   " \
-          + GameDecode.decoding(@code_to_break, $code_input)
-        puts string_of_decoding
-
-        break puts "Congrats, you solve the code" if $code_input == @code_to_break
-        break puts "You lose. The code is: #{@code_to_break}" if count == 12
-      end
     end
   end
 
@@ -151,6 +133,47 @@ module Mastermind
       count_color_sym = "○ " * count_colors
       count_colors_and_position_sym = "● " * count_colors_and_position
       count_colors_and_position_sym + count_color_sym
+    end
+  end
+
+  class GameLooper
+    def self.start_loop(code_to_decode, type_of_game)
+      count = 0
+      loop do
+        count += 1
+        puts "#{count} attempt(s). Input your #{$code_length} digit code:"
+        if type_of_game == 1
+          code_input = RandomCodeGenerator.random_code($code_length, $max_value)
+        elsif type_of_game == 2
+          code_input = gets.chomp
+        end
+
+        if CodeChecker.check_errors(code_input) != 0
+          puts "Wrong input. Repeat."
+          count -= 1
+          next
+        end
+
+        code_input_array = code_input.split("")
+        string_of_decoding = Blocks.print_blocks_sequence(*code_input_array) + "   |   " \
+          + GameDecode.decoding(code_to_decode, code_input)
+        puts string_of_decoding
+
+        break puts "Congrats, you solve the code" if code_input == code_to_decode
+        break puts "You lose. The code is: #{code_to_decode}" if count == 12
+      end
+    end
+  end
+
+  class RandomCodeGenerator
+    def self.random_code(code_length, max_value)
+      code = String.new
+      iteration = 0
+      while iteration < code_length
+        code += (rand(max_value) + 1).to_s
+        iteration += 1
+      end
+      code
     end
   end
 end
