@@ -108,7 +108,7 @@ module Mastermind
         puts string_of_decoding
 
         break puts "Congrats, you solve the code" if $code_input == @code_to_break
-        break puts "You lose" if count == 12
+        break puts "You lose. The code is: #{@code_to_break}" if count == 12
       end
     end
   end
