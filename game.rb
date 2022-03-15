@@ -33,8 +33,6 @@ module Mastermind
   end
 
   class Game
-    attr_reader :game
-
     def initialize(code_length = $code_length, max_value = $max_value)
       puts "Select the type of game (Maker = 1, Braker = 2)"
       @game_selection = gets.chomp
@@ -54,10 +52,6 @@ module Mastermind
       elsif @game_selection == "2"
         @game = GameBraker.new
       end
-    end
-
-    def self.get_game
-      @game
     end
   end
 
@@ -82,16 +76,6 @@ module Mastermind
       puts "Computer generates a #{$code_length} digit code!"
       @code_to_break = RandomCodeGenerator.random_code($code_length, $max_value)
       GameLooper.start_loop(@code_to_break, 2)
-    end
-
-    def random_code(code_length, max_value)
-      code = String.new
-      iteration = 0
-      while iteration < code_length
-        code += (rand(max_value) + 1).to_s
-        iteration += 1
-      end
-      code
     end
   end
 
