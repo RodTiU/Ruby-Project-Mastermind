@@ -95,16 +95,18 @@ module Mastermind
         count += 1
         puts "#{count} attempt(s). Input your #{$code_length} digit code:"
         $code_input = gets.chomp
+
         if CodeChecker.check_errors($code_input) != 0
           puts "Wrong input. Repeat."
           count -= 1
           next
         end
+
         code_input_array = $code_input.split("")
         string_of_decoding = Blocks.print_blocks_sequence(*code_input_array) + "   |   " \
           + GameDecode.decoding(@code_to_break, $code_input)
         puts string_of_decoding
-        puts @code_to_break
+
         break puts "Congrats, you solve the code" if $code_input == @code_to_break
         break puts "You lose" if count == 12
       end
@@ -131,13 +133,21 @@ module Mastermind
     def self.decoding(code_to_decode, code_get)
       count_colors = 0
       count_colors_and_position = 0
-      indexes_lock = Array.new
+      color_position_chars = Array.new
+
       code_get.split("").each.with_index do |char, index|
         if char == code_to_decode[index]
           count_colors_and_position += 1
-          indexes_lock.push(index)
+          color_position_chars.push(char)
         end
       end
+
+      code_get.split("").uniq.each do |char|
+        if color_position_chars.join("").count(char) < code_to_decode.count(char)
+          count_colors += code_to_decode.count(char) - color_position_chars.join("").count(char)
+        end
+      end
+
       count_color_sym = "○ " * count_colors
       count_colors_and_position_sym = "● " * count_colors_and_position
       count_colors_and_position_sym + count_color_sym
