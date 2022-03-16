@@ -109,12 +109,8 @@ module Mastermind
       end
 
       code_get.split("").uniq.each do |char|
-        if color_position_chars.join("").count(char) < code_to_decode.count(char)
-          if code_get.count(char) <= code_to_decode.count(char)
-            count_colors += code_get.count(char) - color_position_chars.join("").count(char)
-          else
-            next
-          end
+        if code_to_decode.count(char) > color_position_chars.join("").count(char) && code_to_decode.count(char) >= code_get.count(char)
+          count_colors += code_get.count(char) - color_position_chars.join("").count(char)
         end
       end
 
