@@ -159,7 +159,7 @@ module Mastermind
         code += (rand(max_value) + 1).to_s
         iteration += 1
       end
-      code
+      code.to_s
     end
   end
 end
