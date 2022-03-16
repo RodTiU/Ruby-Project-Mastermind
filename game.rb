@@ -34,9 +34,11 @@ module Mastermind
 
   class Game
     def initialize(code_length = $code_length, max_value = $max_value)
-      puts "Select the type of game (Maker = 1, Braker = 2)"
+      puts "Select the type of game (Maker = 1, Braker = 2, or type 'q' to exit)"
       @game_selection = gets.chomp
-      if @game_selection != "1" && @game_selection != "2"
+      if @game_selection == "q"
+        exit
+      elsif @game_selection != "1" && @game_selection != "2"
         puts "Error typing. Select an available option"
         restore_game()
       end
